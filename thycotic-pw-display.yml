@@ -1,0 +1,23 @@
+---
+- name: Grab Thycotic password and display it
+  hosts: localhost
+  gather_facts: false
+  vars:
+    secret: >-
+      {{
+          lookup(
+              'community.general.tss',
+              102,
+              base_url='https://10.1.12.183/SecretServer/',
+              username='admin',
+              password='Pickleball!'
+          )
+      }}
+  tasks:
+    - ansible.builtin.debug:
+        msg: >
+          the password is {{
+            (secret['items']
+              | items2dict(key_name='cisco home lab',
+                           value_name='itemValue'))['password']
+          }}
